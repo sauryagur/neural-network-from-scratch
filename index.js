@@ -31,6 +31,7 @@ class Layer {
     constructor(neuronsArray) {
         this.neurons = neuronsArray;
     }
+
     output(neuronInputs) {
         try {
             return this.neurons.map(neuron => neuron.output(neuronInputs)); // put the neuron inputs array through each neuron and put the output in an array and return it
@@ -57,5 +58,23 @@ class NeuralNetwork {
         } catch (error) {
             console.error("error in layer: " + error);
         }
+    }
+
+    train(learningRate, data) {
+        let outputLayer = this.layers[this.layers.length - 1];
+        let
+            actualOutput = this.predict(learningRate, data.input);
+        let requiredOutput = data;
+        let deltas = this.actualOutput.map((actualValue, index) => {
+            let error = requiredOutput[index] - actualValue;
+            return sigmoidDerivative(actualValue) * error;
+        });
+    }
+}
+
+class Data {
+    constructor(input, expected) {
+        this.input = input;
+        this.expected = expected;
     }
 }
