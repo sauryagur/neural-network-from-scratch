@@ -11,7 +11,7 @@ type Neuron struct {
 }
 
 func (neuron Neuron) Forward(inputs []float64) (float64, error) {
-	if len(inputs) != len(weights) {
+	if len(inputs) != len(neuron.Weights) {
 		return 0.0, errors.New("invalid input size")
 	}
 	

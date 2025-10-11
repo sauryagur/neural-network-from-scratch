@@ -2,7 +2,7 @@ package layer
 
 import (
 	"errors"
-	"models/neuron"
+	"github.com/sauryagur/neural-network-from-scratch/models/neuron"
 	)
 
 type Layer struct {
