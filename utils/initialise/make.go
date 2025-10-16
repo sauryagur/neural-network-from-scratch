@@ -11,64 +11,80 @@ import (
 
 func CreateMLP() *neural_network.NeuralNetwork {
 	fmt.Println("Initialising MLP")
-	var numberOfInputs, numberOfOutputs, numberOfHiddenLayers int
-	fmt.Printf("Number of inputs: ")
-	if _, err := fmt.Scan(&numberOfInputs); err != nil {
-		panic(err)
-	}
-	fmt.Printf("Number of outputs: ")
-	if _, err := fmt.Scan(&numberOfOutputs); err != nil {
-		panic(err)
-	}
-	fmt.Printf("Number of hidden layers: ")
-	if _, err := fmt.Scan(&numberOfHiddenLayers); err != nil {
-		panic(err)
+
+	var nInputs, nOutputs, nHidden int
+	nInputs = readPositiveInt("Number of inputs: ")
+	nOutputs = readPositiveInt("Number of outputs: ")
+	nHidden = readNonNegativeInt("Number of hidden layers: ")
+
+	hiddenSizes := make([]int, nHidden)
+	for i := 0; i < nHidden; i++ {
+		prompt := fmt.Sprintf("Neurons in hidden layer %d: ", i+1)
+		hiddenSizes[i] = readPositiveInt(prompt)
 	}
 
-	var hiddenLayerNeurons []int
+	return initMLP(nInputs, nOutputs, hiddenSizes)
+}
 
-	for i := 0; i < numberOfHiddenLayers; i++ {
-		fmt.Printf("Neurons in layer %d: ", i+1)
-		if _, err := fmt.Scan(&hiddenLayerNeurons[i]); err != nil {
-			panic(err)
+func initMLP(nInputs, nOutputs int, hiddenSizes []int) *neural_network.NeuralNetwork {
+	nn := &neural_network.NeuralNetwork{
+		Layers: make([]*layer.Layer, 0, 1+len(hiddenSizes)+1),
+	}
+
+	nn.Layers = append(nn.Layers, newRandomLayer(nInputs, 0))
+
+	prevSize := nInputs
+	for _, size := range hiddenSizes {
+		nn.Layers = append(nn.Layers, newRandomLayer(size, prevSize))
+		prevSize = size
+	}
+
+	nn.Layers = append(nn.Layers, newRandomLayer(nOutputs, prevSize))
+
+	return nn
+}
+
+func readPositiveInt(prompt string) int {
+	for {
+		fmt.Print(prompt)
+		var v int
+		if _, err := fmt.Scan(&v); err != nil || v <= 0 {
+			fmt.Println("Please enter a positive integer.")
+			continue
 		}
+		return v
 	}
-	mlp := initMLP(numberOfInputs, numberOfOutputs, hiddenLayerNeurons)
-	return mlp
 }
 
-func initMLP(inputNeurons, outputNeurons int, hiddenLayerNeurons []int) *neural_network.NeuralNetwork {
-	mlp := new(neural_network.NeuralNetwork)
-
-	// for input layer
-	mlp.Layers[0] = randomLayer(inputNeurons, 1)
-
-	// for the rest of the hidden layers
-	for hiddenLayer := range hiddenLayerNeurons {
-		lastLayer := mlp.Layers[len(mlp.Layers)-1]
-		lastLayerNeurons := len(lastLayer.Neurons)
-		mlp.Layers = append(mlp.Layers, randomLayer(lastLayerNeurons, hiddenLayerNeurons[hiddenLayer]))
+func readNonNegativeInt(prompt string) int {
+	for {
+		fmt.Print(prompt)
+		var v int
+		if _, err := fmt.Scan(&v); err != nil || v < 0 {
+			fmt.Println("Please enter a non-negative integer.")
+			continue
+		}
+		return v
 	}
-
-	lastLayerWeights := len(mlp.Layers[len(mlp.Layers)-1].Neurons)
-	mlp.Layers[len(mlp.Layers)] = randomLayer(outputNeurons, lastLayerWeights)
-
-	return mlp
 }
 
-func randomNeuron(weights int) *neuron.Neuron {
-	outputNeuron := new(neuron.Neuron)
-	outputNeuron.Bias = rand.Float64()
-	for i := 0; i < weights; i++ {
-		outputNeuron.Weights = append(outputNeuron.Weights, rand.Float64())
+func newRandomNeuron(numWeights int) *neuron.Neuron {
+	n := &neuron.Neuron{
+		Bias: rand.Float64(),
 	}
-	return outputNeuron
+	n.Weights = make([]float64, numWeights)
+	for i := range n.Weights {
+		n.Weights[i] = rand.Float64()
+	}
+	return n
 }
 
-func randomLayer(size, weights int) *layer.Layer {
-	outputLayer := new(layer.Layer)
-	for i := 0; i < size; i++ {
-		outputLayer.Neurons = append(outputLayer.Neurons, randomNeuron(weights))
+func newRandomLayer(numNeurons, weightsPerNeuron int) *layer.Layer {
+	l := &layer.Layer{
+		Neurons: make([]*neuron.Neuron, numNeurons),
 	}
-	return outputLayer
+	for i := 0; i < numNeurons; i++ {
+		l.Neurons[i] = newRandomNeuron(weightsPerNeuron)
+	}
+	return l
 }
