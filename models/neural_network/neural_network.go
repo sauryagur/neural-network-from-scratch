@@ -74,7 +74,11 @@ func (net *NeuralNetwork) Backward(yTrue []float64) {
 			for j := 0; j < len(yTrue); j++ {
 				// here a is last output of the output layer
 				a := currentLayer.LastOutput[j]
-				deltaNext[j] = (a - yTrue[j]) * activations.SigmoidDerivative(a)
+				if net.EnableSoftMax {
+					deltaNext[j] = a - yTrue[j]
+				} else {
+					deltaNext[j] = (a - yTrue[j]) * activations.SigmoidDerivative(a)
+				}
 			}
 		} else {
 			// Hidden layer: error = (W_next^T * deltaNext) * activation derivative
