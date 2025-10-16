@@ -17,3 +17,28 @@ MLPs have a lot of applications:
 - Regression (guessing numbers)
 - Classification (picking categories)
 - Even unsupervised learning (just guessing any patterns in general)
+
+## How does it work? (forward and backward propagation)
+Forward propagation is how the network makes a prediction. The input data passes through each layer: weights are applied, biases added, and an activation function (like sigmoid) is used to get the output from each neuron. At the end, softmax turns the final layer's values into probabilities.
+
+Backward propagation then calculates the error and propagates it backwards through the network with the chain rule to compute gradients for each weight and bias. These gradients are used in gradient descent to update the parameters, subtract learning rate times gradient, reducing the loss over time.
+
+For a better visual explanation, check out [3blue1brown's YouTube series](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi) on neural networks, especially the videos on forward/backward pass and gradients.
+
+## Try it out yourself
+
+Clone it:
+```
+git clone https://github.com/sauryagur/neural-network-from-scratch.git
+cd neural-network-from-scratch
+go mod tidy
+go run main.go
+```
+
+It'll train a 784-128-64-10 net on MNIST. Experiment with epochs/lr in main.go. Expect ~90% accuracy without sweating too hard – pure Go, no fancy libs!
+
+## References
+[3Blue1Brown's video on backpropagation](https://www.youtube.com/watch?v=tIeHLnjs5U8)
+[MNIST Dataset](https://www.kaggle.com/datasets/hojjatk/mnist-dataset)
+[Stochastic Gradient Descent](https://en.wikipedia.org/wiki/Stochastic_gradient_descent)
+[MNIST Reader Util](https://www.kaggle.com/code/hojjatk/read-mnist-dataset)
