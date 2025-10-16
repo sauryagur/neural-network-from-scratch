@@ -10,6 +10,7 @@ type Neuron struct {
 	Weights         []float64
 	WeightGradients []float64
 	Bias            float64
+	BiasGradient    float64
 }
 
 func (neuron Neuron) Forward(inputs []float64) (float64, error) {
