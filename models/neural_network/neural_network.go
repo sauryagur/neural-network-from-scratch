@@ -65,7 +65,7 @@ func (net *NeuralNetwork) Backward(yTrue []float64) {
 
 		// if current layer is output layer then calculate the deltaNext
 		if i == len(net.Layers)-1 {
-			deltaNext := make([]float64, len(yTrue))
+			deltaNext = make([]float64, len(yTrue))
 			// calculate delta for each neuron
 			for j := 0; j < len(yTrue); j++ {
 				// here a is last output of the output layer
