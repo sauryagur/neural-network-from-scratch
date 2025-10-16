@@ -9,8 +9,9 @@ import (
 )
 
 type NeuralNetwork struct {
-	Layers       []*layer.Layer
-	LearningRate float64
+	Layers        []*layer.Layer
+	LearningRate  float64
+	EnableSoftMax bool
 }
 
 func (net *NeuralNetwork) Output(prev []float64) ([]float64, error) {
@@ -21,6 +22,9 @@ func (net *NeuralNetwork) Output(prev []float64) ([]float64, error) {
 			return nil, errors.New("bad input")
 		}
 		prev = next
+	}
+	if net.EnableSoftMax == true {
+		return activations.SoftmaxVector(prev), nil
 	}
 	return prev, nil
 }

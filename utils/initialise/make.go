@@ -16,6 +16,7 @@ func CreateMLP() *neural_network.NeuralNetwork {
 	nInputs = readPositiveInt("Number of inputs: ")
 	nOutputs = readPositiveInt("Number of outputs: ")
 	nHidden = readNonNegativeInt("Number of hidden layers: ")
+	learningRate := 0.05
 
 	hiddenSizes := make([]int, nHidden)
 	for i := 0; i < nHidden; i++ {
@@ -23,10 +24,10 @@ func CreateMLP() *neural_network.NeuralNetwork {
 		hiddenSizes[i] = readPositiveInt(prompt)
 	}
 
-	return initMLP(nInputs, nOutputs, hiddenSizes)
+	return InitMLP(nInputs, nOutputs, hiddenSizes, learningRate)
 }
 
-func initMLP(nInputs, nOutputs int, hiddenSizes []int) *neural_network.NeuralNetwork {
+func InitMLP(nInputs, nOutputs int, hiddenSizes []int, learningRate float64) *neural_network.NeuralNetwork {
 	nn := &neural_network.NeuralNetwork{
 		Layers: make([]*layer.Layer, 0, 1+len(hiddenSizes)+1),
 	}
@@ -40,6 +41,9 @@ func initMLP(nInputs, nOutputs int, hiddenSizes []int) *neural_network.NeuralNet
 	}
 
 	nn.Layers = append(nn.Layers, newRandomLayer(nOutputs, prevSize))
+
+	nn.LearningRate = learningRate
+	nn.EnableSoftMax = false
 
 	return nn
 }
