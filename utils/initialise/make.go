@@ -29,10 +29,8 @@ func CreateMLP() *neural_network.NeuralNetwork {
 
 func InitMLP(nInputs, nOutputs int, hiddenSizes []int, learningRate float64) *neural_network.NeuralNetwork {
 	nn := &neural_network.NeuralNetwork{
-		Layers: make([]*layer.Layer, 0, 1+len(hiddenSizes)+1),
+		Layers: make([]*layer.Layer, 0, len(hiddenSizes)+1),
 	}
-
-	nn.Layers = append(nn.Layers, newRandomLayer(nInputs, 0))
 
 	prevSize := nInputs
 	for _, size := range hiddenSizes {
@@ -72,23 +70,20 @@ func readNonNegativeInt(prompt string) int {
 	}
 }
 
-func newRandomNeuron(numWeights int) *neuron.Neuron {
-	n := &neuron.Neuron{
-		Bias: rand.Float64(),
-	}
-	n.Weights = make([]float64, numWeights)
-	for i := range n.Weights {
-		n.Weights[i] = rand.Float64()
-	}
-	return n
-}
-
 func newRandomLayer(numNeurons, weightsPerNeuron int) *layer.Layer {
 	l := &layer.Layer{
 		Neurons: make([]*neuron.Neuron, numNeurons),
 	}
 	for i := 0; i < numNeurons; i++ {
-		l.Neurons[i] = newRandomNeuron(weightsPerNeuron)
+		weights := make([]float64, weightsPerNeuron)
+		for j := 0; j < weightsPerNeuron; j++ {
+			weights[j] = rand.Float64()*2 - 1
+		}
+		l.Neurons[i] = &neuron.Neuron{
+			Weights:         weights,
+			WeightGradients: make([]float64, weightsPerNeuron),
+			Bias:            rand.Float64()*2 - 1,
+		}
 	}
 	return l
 }
