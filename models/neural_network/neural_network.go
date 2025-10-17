@@ -3,6 +3,7 @@ package neural_network
 import (
 	"errors"
 	"fmt"
+	"math"
 
 	"github.com/sauryagur/neural-network-from-scratch/models/layer"
 	"github.com/sauryagur/neural-network-from-scratch/utils/activations"
@@ -43,7 +44,12 @@ func (net *NeuralNetwork) Train(inputs [][]float64, targets [][]float64, epochs 
 			yPred, _ := net.Output(x)
 
 			// we need to calculate how wrong the model is right now
-			loss := CalculateLoss(yPred, yTrue)
+			var loss float64
+			if net.EnableSoftMax == false {
+				loss = CalculateLoss(yPred, yTrue)
+			} else {
+				loss = CrossEntropyLoss(yPred, yTrue)
+			}
 
 			// this totalLoss thing is just for diagnostics
 			totalLoss += loss
@@ -128,7 +134,7 @@ func (net *NeuralNetwork) UpdateParameters(learningRate float64) {
 		}
 	}
 }
-func CalculateLoss(yPred []float64, yTrue []float64) float64 {
+func CalculateLoss(yPred []float64, yTrue []float64) float64 { // for regression tasks
 	if len(yPred) != len(yTrue) {
 		panic("Lengths of predictions and true values must match")
 	}
@@ -138,4 +144,20 @@ func CalculateLoss(yPred []float64, yTrue []float64) float64 {
 		sum += 0.5 * diff * diff
 	}
 	return sum / float64(len(yPred)) // average loss per output neuron
+}
+
+func CrossEntropyLoss(yPred []float64, yTrue []float64) float64 { // for classification tasks
+	if len(yPred) != len(yTrue) {
+		panic("Lengths of predictions and true values must match")
+	}
+
+	var sum float64
+	eps := 1e-15
+
+	for i := 0; i < len(yPred); i++ {
+		p := math.Min(math.Max(yPred[i], eps), 1-eps)
+		sum += -yTrue[i] * math.Log(p)
+	}
+
+	return sum / float64(len(yPred))
 }

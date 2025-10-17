@@ -38,7 +38,8 @@ go run main.go
 It'll train a 784-128-64-10 net on MNIST. Experiment with epochs/lr in main.go. Expect ~90% accuracy without sweating too hard – pure Go, no fancy libs!
 
 ## References
-[3Blue1Brown's video on backpropagation](https://www.youtube.com/watch?v=tIeHLnjs5U8)
-[MNIST Dataset](https://www.kaggle.com/datasets/hojjatk/mnist-dataset)
-[Stochastic Gradient Descent](https://en.wikipedia.org/wiki/Stochastic_gradient_descent)
-[MNIST Reader Util](https://www.kaggle.com/code/hojjatk/read-mnist-dataset)
+- [The Stillwell Brain - Vsauce](https://www.youtube.com/watch?v=rA5qnZUXcqo)
+- [3Blue1Brown's video on backpropagation](https://www.youtube.com/watch?v=tIeHLnjs5U8)
+- [MNIST Dataset](https://www.kaggle.com/datasets/hojjatk/mnist-dataset)
+- [Stochastic Gradient Descent](https://en.wikipedia.org/wiki/Stochastic_gradient_descent)
+- [MNIST Reader Util](https://www.kaggle.com/code/hojjatk/read-mnist-dataset)
